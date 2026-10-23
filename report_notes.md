@@ -51,6 +51,8 @@ dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 dir.create(figure_dir, recursive = TRUE, showWarnings = FALSE)
 ```
 
+The report and the result files have been arranged by the same 13 case-study topics: each topic below contains its explanation, relevant R code, and the matching output. The full pasted console transcript is retained in the appendix for a complete record.
+
 ### Actual Output
 
 ```text
@@ -176,6 +178,23 @@ Column names: year, arrivals_m
 Missing arrivals: 0
 ```
 
+The actual `str()` and `head()` output from the run was:
+
+```text
+'data.frame':   20 obs. of  2 variables:
+ $ year      : int  2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 ...
+ $ arrivals_m: num  2.65 2.54 2.38 2.73 3.46 ...
+
+First rows:
+  year arrivals_m
+1 2000      2.649
+2 2001      2.537
+3 2002      2.384
+4 2003      2.726
+5 2004      3.457
+6 2005      3.919
+```
+
 The extracted result is saved in [outputs/tourism_india_2000_2019.csv](./outputs/tourism_india_2000_2019.csv). It has 20 rows and includes all years from 2000 through 2019.
 
 | Year | Arrivals (millions) | Year | Arrivals (millions) |
@@ -226,6 +245,42 @@ The script also computes the median, mean, standard deviation, quartiles, maximu
 ### Actual Output
 
 From [outputs/descriptive_statistics.csv](./outputs/descriptive_statistics.csv):
+
+The console summary printed by R for the extracted data was:
+
+```text
+Summary:
+      year        arrivals_m
+ Min.   :2000   Min.   : 2.384
+ 1st Qu.:2005   1st Qu.: 3.804
+ Median :2010   Median : 5.529
+ Mean   :2010   Mean   : 7.756
+ 3rd Qu.:2014   3rd Qu.:13.151
+ Max.   :2019   Max.   :17.914
+Missing arrivals: 0
+
+Descriptive statistics:
+                     Statistic        Value
+             Observation count   20.0000000
+                    First year 2000.0000000
+                     Last year 2019.0000000
+      Mean arrivals (millions)    7.7562000
+    Median arrivals (millions)    5.5295000
+ Standard deviation (millions)    5.3435378
+            Minimum (millions)    2.3840000
+     First quartile (millions)    3.8035000
+     Third quartile (millions)   13.1512500
+            Maximum (millions)   17.9140000
+  Skewness (population moment)    0.7431083
+
+Compound annual growth rates:
+    Period CAGR_percent
+ 2000-2013     7.723314
+ 2014-2019     6.448085
+ 2000-2019    10.583424
+```
+
+The full-precision CSV tables are shown below; console values above are printed at R's default display precision.
 
 | Statistic | Actual result |
 |---|---:|
@@ -310,6 +365,48 @@ In the executable script, the quality table also contains handling notes for eve
 ### Actual Output
 
 The generated [outputs/data_quality_report.csv](./outputs/data_quality_report.csv) reports:
+
+The quality-check table below is the terminal printout from the run. Console column spacing is preserved as printed; the readable, full CSV report follows it.
+
+```text
+Data quality report:
+                                   Check
+                  Missing arrival values
+                         Duplicate years
+             Duplicate extracted records
+                    Missing target years
+                              Year range
+             Year and arrival data types
+                     Non-finite arrivals
+               Zero or negative arrivals
+          Year-on-year IQR outlier years
+ Absolute year-on-year changes above 50%
+           Source precision and coverage
+              Finding
+                    0
+                FALSE
+                    0
+                                                        No missing years from 2000 through 2019.
+         2000 to 2019
+                                                              year: integer ; arrivals_m: double
+                    0
+                    0
+                 2014
+                 2014
+ World Bank source values are retained at supplied precision; arrivals are divided by 1,000,000.
+             Handling
+                                                            Preserved as missing; no imputation.
+                                   No duplicate years expected; records retained unless invalid.
+                                           No duplicate extracted year-arrival records expected.
+                                                             Complete requested annual coverage.
+                                                            Use only requested period 2000-2019.
+                                                    Years are integers and arrivals are numeric.
+                                              Non-finite source values are not used in modeling.
+       Exclude non-positive values from log modeling; no valid outlier is automatically removed.
+              IQR rule is a screening flag, not evidence of an error; retain valid observations.
+                  Flag for investigation; do not infer a methodological change without evidence.
+ Indicator caveat: arrivals count trips/arrivals, not unique people; country methods can differ.
+```
 
 | Check | Finding | Handling |
 |---|---|---|
@@ -425,6 +522,31 @@ The generated [outputs/tourism_model_data.csv](./outputs/tourism_model_data.csv)
 year, arrivals_m, ln, t, post2014, shock
 ```
 
+The actual CSV contents, shown at the precision saved by R, are:
+
+| year | arrivals_m | ln | t | post2014 | shock |
+|---:|---:|---:|---:|---:|---:|
+| 2000 | 2.649 | 0.974182210289933 | 0 | 0 | 0 |
+| 2001 | 2.537 | 0.930982280617145 | 1 | 0 | 1 |
+| 2002 | 2.384 | 0.868779749203103 | 2 | 0 | 1 |
+| 2003 | 2.726 | 1.00283533327434 | 3 | 0 | 0 |
+| 2004 | 3.457 | 1.24040116093949 | 4 | 0 | 0 |
+| 2005 | 3.919 | 1.36583651921749 | 5 | 0 | 0 |
+| 2006 | 4.447 | 1.49222971152856 | 6 | 0 | 0 |
+| 2007 | 5.082 | 1.62570488489797 | 7 | 0 | 0 |
+| 2008 | 5.283 | 1.66449411818218 | 8 | 0 | 0 |
+| 2009 | 5.168 | 1.6424857664803 | 9 | 0 | 1 |
+| 2010 | 5.776 | 1.75371140159053 | 10 | 0 | 0 |
+| 2011 | 6.309 | 1.84197718538867 | 11 | 0 | 0 |
+| 2012 | 6.578 | 1.88373074776687 | 12 | 0 | 0 |
+| 2013 | 6.968 | 1.9413282395502 | 13 | 0 | 0 |
+| 2014 | 13.107 | 2.57314643863741 | 14 | 1 | 0 |
+| 2015 | 13.284 | 2.5865603035145 | 15 | 1 | 0 |
+| 2016 | 14.57 | 2.67896462020711 | 16 | 1 | 0 |
+| 2017 | 15.543 | 2.74361037650076 | 17 | 1 | 0 |
+| 2018 | 17.423 | 2.85779117244077 | 18 | 1 | 0 |
+| 2019 | 17.914 | 2.885582530053 | 19 | 1 | 0 |
+
 Actual cleaning decisions:
 
 - No missing arrivals required imputation.
@@ -486,6 +608,13 @@ The executable script also fits the identifiable multi-variable terms at each or
 
 ### Actual Output
 
+The hold-out and rolling sample counts printed by the script were:
+
+```text
+Training observations: 16 ; year range: 2000-2015
+Testing observations: 4 ; year range: 2016-2019
+```
+
 | Dataset | Year range | Observations |
 |---|---:|---:|
 | Training | 2000–2015 | 16 |
@@ -531,6 +660,8 @@ The training-fitted models are used for hold-out evaluation. The separate full-d
 
 Both models were fitted successfully. No aliased coefficients were reported. Their training and full-data coefficients are saved in [outputs/single_model_coefficients.csv](./outputs/single_model_coefficients.csv) and [outputs/multi_model_coefficients.csv](./outputs/multi_model_coefficients.csv).
 
+The exact coefficient and fit-statistic blocks printed by R are placed in their matching model subsections below. The CSVs linked there contain greater numeric precision than the console's rounded display.
+
 ### 9.1 Single-variable model
 
 #### Theory
@@ -550,6 +681,17 @@ single_final <- lm(ln ~ t, data = tourism_model)
 
 Training model:
 
+```text
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept) 0.793761   0.073127   10.86 3.35e-08 ***
+t           0.105735   0.008307   12.73 4.37e-09 ***
+
+Residual standard error: 0.1532 on 14 degrees of freedom
+Multiple R-squared:  0.9205,    Adjusted R-squared:  0.9148
+F-statistic:   162 on 1 and 14 DF,  p-value: 4.372e-09
+```
+
 | Term | Estimate | Standard error | p-value | Percentage equivalent |
 |---|---:|---:|---:|---:|
 | Intercept | 0.793760949243539 | 0.0731266464641606 | 3.35199390128787e-08 | 121.16988911667% |
@@ -563,6 +705,19 @@ Training model:
 The training time coefficient corresponds to an 11.1527% per-year equivalent under the specified log-linear model. This is an estimated association over the training period, not a guaranteed future growth rate.
 
 The full-data model is refitted for forecasting. Its time slope is 0.112583106064978 (standard error 0.00558398279241529; p-value 8.38106886683297e-14), equivalent to 11.9165262469088%. Full-data R-squared is 0.9575969637161 and adjusted R-squared is 0.955241239478105. These in-sample values are not hold-out accuracy.
+
+The full-data model summary printed by R was:
+
+```text
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept) 0.758177   0.062055   12.22 3.78e-10 ***
+t           0.112583   0.005584   20.16 8.38e-14 ***
+
+Residual standard error: 0.144 on 18 degrees of freedom
+Multiple R-squared:  0.9576,    Adjusted R-squared:  0.9552
+F-statistic: 406.5 on 1 and 18 DF,  p-value: 8.381e-14
+```
 
 ### 9.2 Multi-variable model
 
@@ -589,6 +744,19 @@ multi_final <- lm(
 
 Training model:
 
+```text
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)
+(Intercept)  0.920179   0.049259  18.680 3.09e-10 ***
+t            0.084360   0.005882  14.342 6.48e-09 ***
+post2014     0.436451   0.077627   5.622 0.000112 ***
+shock       -0.110204   0.057848  -1.905 0.081010 .
+
+Residual standard error: 0.08404 on 12 degrees of freedom
+Multiple R-squared:  0.9795,    Adjusted R-squared:  0.9743
+F-statistic: 190.9 on 3 and 12 DF,  p-value: 2.171e-10
+```
+
 | Term | Estimate | Standard error | p-value | Percentage equivalent |
 |---|---:|---:|---:|---:|
 | Intercept | 0.920179479826653 | 0.0492588820801853 | 3.08975151976986e-10 | 150.974079735882% |
@@ -602,6 +770,21 @@ Training model:
 | Adjusted R-squared | 0.97434757088704 |
 
 The full-data multi-variable model has R-squared 0.989924921788725 and adjusted R-squared 0.988035844624112. Its `t` coefficient is 0.0833627737427516, its `post2014` coefficient is 0.418113862535447, and its `shock` coefficient is -0.113378107138901. These full-data coefficients are used to form forecasts and must not be interpreted as causal effects.
+
+The full-data model summary printed by R was:
+
+```text
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)
+(Intercept)  0.927343   0.042387  21.878 2.39e-13 ***
+t            0.083363   0.005006  16.651 1.58e-11 ***
+post2014     0.418114   0.060033   6.965 3.19e-06 ***
+shock       -0.113378   0.051041  -2.221   0.0411 *
+
+Residual standard error: 0.07445 on 16 degrees of freedom
+Multiple R-squared:  0.9899,    Adjusted R-squared:  0.988
+F-statistic:   524 on 3 and 16 DF,  p-value: 3.528e-16
+```
 
 ---
 
@@ -638,11 +821,36 @@ calculate_metrics <- function(actual, predicted, model_name) {
 
 From [outputs/test_metrics.csv](./outputs/test_metrics.csv):
 
+This is the terminal output for both evaluation procedures:
+
+```text
+Hold-out test metrics (arrivals in millions):
+                  Model N       MAE      RMSE MAPE_percent MAPE_excluded
+        Single-variable 4 2.1928629 2.2426485    13.631227             0
+         Multi-variable 4 0.7084375 0.8226804     4.256135             0
+ Naive last observation 4 1.1575000 1.2625377     7.154404             0
+
+Expanding-window one-step rolling-origin metrics (arrivals in millions):
+                  Model  N       MAE      RMSE MAPE_percent MAPE_excluded
+        Single-variable 12 1.4140240 1.9766421    12.448200             0
+         Multi-variable 11 0.5202382 0.6159688     5.670904             1
+ Naive last observation 12 1.0885000 1.9370617     9.289873             0
+```
+
 | Model | N | MAE (millions) | RMSE (millions) | MAPE | MAPE exclusions |
 |---|---:|---:|---:|---:|---:|
 | Single-variable | 4 | 2.19286292182596 | 2.24264852636978 | 13.6312265646129% | 0 |
 | Multi-variable | 4 | 0.708437450882576 | 0.822680392545665 | 4.25613465764218% | 0 |
 | Naïve last observation | 4 | 1.1575 | 1.26253772220873 | 7.15440398931495% | 0 |
+
+The actual hold-out prediction rows from [outputs/test_predictions.csv](./outputs/test_predictions.csv) are:
+
+| Year | Actual | Single-variable | Multi-variable | Naïve last observation |
+|---:|---:|---:|---:|---:|
+| 2016 | 14.570 | 12.0073912498974 | 14.9751730268279 | 13.284 |
+| 2017 | 15.543 | 13.3465441770665 | 16.293298958955 | 14.570 |
+| 2018 | 17.423 | 14.8350493261316 | 17.7274473216633 | 15.543 |
+| 2019 | 17.914 | 16.4895635596006 | 19.2878304960840 | 17.423 |
 
 From [outputs/rolling_validation_metrics.csv](./outputs/rolling_validation_metrics.csv):
 
@@ -651,6 +859,23 @@ From [outputs/rolling_validation_metrics.csv](./outputs/rolling_validation_metri
 | Single-variable | 12 | 1.41402398589221 | 1.97664214938816 | 12.4482001297463% | 0 |
 | Multi-variable | 11 | 0.520238166981076 | 0.615968809995163 | 5.67090430721538% | 1 |
 | Naïve last observation | 12 | 1.0885 | 1.93706169235778 | 9.28987253534708% | 0 |
+
+The actual expanding-window predictions saved in [outputs/rolling_validation_predictions.csv](./outputs/rolling_validation_predictions.csv) are:
+
+| Year | Actual | Single-variable | Multi-variable | Naïve last observation |
+|---:|---:|---:|---:|---:|
+| 2008 | 5.283 | 5.33818112697306 | 5.21828842900118 | 5.082 |
+| 2009 | 5.168 | 5.92125342584014 | 5.0938950010333 | 5.283 |
+| 2010 | 5.776 | 6.24456701517733 | 6.39696174802339 | 5.168 |
+| 2011 | 6.309 | 6.70943703743914 | 6.79334426346369 | 5.776 |
+| 2012 | 6.578 | 7.24002007275002 | 7.27671681433421 | 6.309 |
+| 2013 | 6.968 | 7.72431449146349 | 7.72431449146349 | 6.578 |
+| 2014 | 13.107 | 8.2155203603417 | Not estimable | 6.968 |
+| 2015 | 13.284 | 10.1628614527266 | 14.2631723535653 | 13.107 |
+| 2016 | 14.570 | 12.0073912498974 | 14.9751730268279 | 13.284 |
+| 2017 | 15.543 | 13.9680601486444 | 16.1407013781678 | 14.570 |
+| 2018 | 17.423 | 15.9593194786602 | 17.3824190060232 | 15.543 |
+| 2019 | 17.914 | 18.1726673513337 | 18.9148381970037 | 17.423 |
 
 The multi-variable model has the lowest error on the four-year hold-out set. It also has the lowest MAE and RMSE among the available rolling predictions. The rolling multi-variable result omits 2014 and therefore uses one fewer prediction; comparisons should account for this coverage difference.
 
@@ -703,6 +928,25 @@ The full script saves both models' forecasts and interval limits in `outputs/for
 ### Actual Output
 
 From [outputs/forecasts.csv](./outputs/forecasts.csv), values in millions:
+
+The following is the forecast table as printed by the terminal (R's default rounded display):
+
+```text
+2020-2025 historical-trend baseline forecasts (millions; log-scale prediction intervals exponentiated):
+ year           model forecast lower_limit upper_limit
+ 2020 Single-variable 20.28414    14.53070    28.31565
+ 2021 Single-variable 22.70131    16.18911    31.83307
+ 2022 Single-variable 25.40651    18.03063    35.79969
+ 2023 Single-variable 28.43409    20.07503    40.27377
+ 2024 Single-variable 31.82244    22.34423    45.32121
+ 2025 Single-variable 35.61457    24.86250    51.01650
+ 2020  Multi-variable 20.34250    17.08571    24.22008
+ 2021  Multi-variable 22.11100    18.52353    26.39325
+ 2022  Multi-variable 24.03324    20.07051    28.77838
+ 2023  Multi-variable 26.12259    21.73452    31.39660
+ 2024  Multi-variable 28.39359    23.52411    34.27105
+ 2025  Multi-variable 30.86202    25.44854    37.42706
+```
 
 | Year | Model | Forecast | Lower limit | Upper limit |
 |---:|---|---:|---:|---:|
